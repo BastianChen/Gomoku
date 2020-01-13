@@ -47,7 +47,7 @@ class Game:
     def action_to_location(self, action):
         x = action % self.size[1]
         y = action // self.size[0]
-        return [x, y]
+        return [y, x]
 
     # 采取动作
     def step(self, action):

@@ -8,12 +8,12 @@ class MyNet(nn.Module):
         super().__init__()
         self.board_size = args.board_size
 
-        # 输入为[n,2,9,9]
+        # 输入为[n,2,15,15]
         self.conv_layer = nn.Sequential(
-            ConvolutionLayer(2, 64, 3, 1, 1),  # [n,64,9,9]
-            ConvolutionLayer(64, 128, 3, 1, 1),  # [n,128,9,9]
-            ConvolutionLayer(128, 256, 3, 1, 1),  # [n,256,9,9]
-            ConvolutionLayer(256, 16, 1)  # [n,16,9,9]
+            ConvolutionLayer(2, 64, 3, 1, 1),  # [n,64,15,15]
+            ConvolutionLayer(64, 128, 3, 1, 1),  # [n,128,15,15]
+            ConvolutionLayer(128, 256, 3, 1, 1),  # [n,256,15,15]
+            ConvolutionLayer(256, 16, 1)  # [n,16,15,15]
         )
 
         self.linear_action_layer = nn.Sequential(
@@ -58,7 +58,7 @@ class ConvolutionLayer(nn.Module):
 
 
 if __name__ == '__main__':
-    input = torch.Tensor(2, 2, 9, 9)
+    input = torch.Tensor(2, 2, 15, 15)
     net = MyNet()
     action, value = net(input)
     print(action.shape)
