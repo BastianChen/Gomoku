@@ -120,7 +120,7 @@ class Game:
     # 使用根据MCTS获得的动作进行自我对弈（在线学习）
     # 参数：player为玩家，temp为概率修正系数，is_shown为是否打印棋盘信息
     # 一个玩家对应一个MCTS
-    def self_play(self, player, temp=1e-3, is_shown=True):
+    def self_play(self, player, temp=1e-3, is_shown=False):
         # 初始化棋盘信息
         self.init_state()
         # 创建list保存在自训练过程中产生的状态，mcts对该动作预测的概率以及对应的玩家

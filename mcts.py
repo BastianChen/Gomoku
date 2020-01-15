@@ -1,6 +1,6 @@
-import numpy as np
 import copy
 from utils import *
+from config import args
 
 '''
 实现MCTS算法
@@ -9,7 +9,7 @@ from utils import *
 
 # 定义MCTS树节点
 class TreeNode:
-    def __init__(self, parent=None, c_puct=5.0, prob=1.0):
+    def __init__(self, parent=None, c_puct=args.c_puct, prob=1.0):
         # 定义父节点
         self.parent = parent
         # 定义子节点,使用字典这一数据类型
@@ -39,6 +39,7 @@ class TreeNode:
     # c_puct为探索系数（控制探索的强度）
     # P为节点的访问概率，访问的越多概率越大，用来控制多访问访问率高的节点
     # 最后一项分子为父节点的访问次数，分母为子节点的访问次数，随着访问次数增加，最后一项值会降低，用来提高探索访问次数少的节点
+    @property
     def get_value(self):
         self.U = self.c_puct * self.P * np.sqrt(self.parent.N) / (1 + self.N)
         return self.Q + self.U
@@ -46,7 +47,7 @@ class TreeNode:
     # 选择价值最大的子节点
     def select(self):
         # 配合key 与 lambda不等式选出PUCT值最大的动作，若只用max的话则只会根据字典的key来进行筛选，不符合我们的要求
-        return max(self.children.items(), key=lambda node: node[1].get_value(self.c_puct))
+        return max(self.children.items(), key=lambda node: node[1].get_value)
 
     # 扩展节点，作用于叶子节点
     # action_probs包含当前状态可以选择的动作以及选择该动作的概率
@@ -84,7 +85,7 @@ class MCTS:
         self.policy = policy
         self.number_playout = number_playout
 
-    # 定义棋盘模拟对弈直到结束
+    # 定义棋盘模拟自我对弈到结束或者到叶子节点
     def playout(self, env):
         node = self.root
 
@@ -98,7 +99,7 @@ class MCTS:
         action_probs, leaf_value = self.policy(env)
 
         # 判断当前棋局是否结束，如果未结束说明在叶子节点上要进行扩展，如果结束了则用胜负结果体换神经网络预测的局面价值，用于后于训练
-        terminal, winner = env.end()
+        terminal, winner = env.end
 
         if terminal:
             # 和棋
@@ -115,8 +116,8 @@ class MCTS:
 
     # 仿真，输出动作以及相应的概率
     def get_action_probs(self, env, temp=1e-3):
-        # 多次仿真,每次都要深复制避免自我对弈时环境中参数变化对自我对弈产生影响
-        for n in range(self.number_playout):
+        # 在选择动作前多次仿真,每次都要深复制避免自我对弈时环境中参数变化对自我对弈产生影响
+        for _ in range(self.number_playout):
             env_copy = copy.deepcopy(env)
             self.playout(env_copy)
 
@@ -177,6 +178,10 @@ class Player:
             return action, action_probs
         else:
             return action
+
+    # 用于环境在自我对弈结束一次时重置mcts树
+    def reset_player(self):
+        self.mcts.update_with_action(-1)
 
     # 打印出每一步的概率值
     def print_probs(self, probs):

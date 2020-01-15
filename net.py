@@ -18,17 +18,17 @@ class MyNet(nn.Module):
 
         self.linear_action_layer = nn.Sequential(
             nn.Linear(16 * self.board_size * self.board_size, 256),
-            nn.BatchNorm1d(256),
+            # nn.BatchNorm1d(256),
             nn.PReLU(),
         )
 
         self.linear_value_layer = nn.Sequential(
             nn.Linear(16 * self.board_size * self.board_size, 256),
-            nn.BatchNorm1d(256),
+            # nn.BatchNorm1d(256),
             nn.PReLU(),
         )
 
-        self.action_layer = nn.Linear(256, 1)
+        self.action_layer = nn.Linear(256, self.board_size * self.board_size)
         self.value_layer = nn.Linear(256, 1)
 
         self.softmax = nn.LogSoftmax(-1)
@@ -42,6 +42,10 @@ class MyNet(nn.Module):
         value = self.linear_value_layer(data)
         value = self.tanh(self.value_layer(value))
         return action, value
+
+    def add_histogram(self, writer, epoch):
+        writer.add_histogram("weight/action", self.action_layer.weight, epoch)
+        writer.add_histogram("weight/value", self.value_layer.weight, epoch)
 
 
 class ConvolutionLayer(nn.Module):
