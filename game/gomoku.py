@@ -127,7 +127,7 @@ class Game:
         states, mcts_probs, current_players = [], [], []
         # 一直自我对弈直到游戏结束
         while True:
-            # 获取针对该玩家推荐的动作以及该动作的概率
+            # 获取针对该玩家推荐的动作以及所有动作的概率
             action, action_probs = player.get_action(self, temp=temp, return_prob=True)
             states.append(self.get_state)
             mcts_probs.append(action_probs)

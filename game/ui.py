@@ -250,6 +250,6 @@ class GameState:
 
 
 if __name__ == "__main__":
-    gameState = GameState(15, 4)
+    gameState = GameState(15, 5)
     while True:
         gameState.step()
