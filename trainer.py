@@ -36,7 +36,6 @@ class Trainer:
         self.net_path = net_path
         self.net = MyNet().to(self.device)
         self.MSELoss = nn.MSELoss()
-        self.CrossEntropyLoss = nn.CrossEntropyLoss()
         self.optimizer = torch.optim.Adam(self.net.parameters(), weight_decay=1e-4)
         # 实例化蒙特卡洛玩家，参数：游戏策略，探索常数，模拟次数，是否自我对弈（测试时为False）
         self.mcts_player = Player(policy=self.policy, number_playout=self.number_playout, is_self_play=True)
@@ -79,7 +78,7 @@ class Trainer:
                 # 价值损失：输出价值与该状态所在对局最终胜负的值（-1/0/1）（均方差）
                 # 策略损失：蒙特卡洛树模拟的概率值与神经网络模拟的概率值的相似度 (-log(pi) * p)(交叉熵)
                 value_loss = self.MSELoss(value, winner_value_batch.view_as(value))
-                policy_loss = -torch.mean(torch.sum(mcts_probs_batch * log_act_probs, dim=1))
+                policy_loss = -torch.mean(torch.sum(mcts_probs_batch * log_act_probs, dim=-1))
                 loss = value_loss + policy_loss
 
                 # 反向传播
