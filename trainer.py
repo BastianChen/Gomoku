@@ -131,5 +131,5 @@ class Trainer:
 
 
 if __name__ == '__main__':
-    trainer = Trainer("models/net.pth", args.board_size, args.number)
+    trainer = Trainer("models/net_7_4.pth", args.board_size, args.number)
     trainer.train()

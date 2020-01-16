@@ -107,16 +107,15 @@ class MCTS:
                 leaf_value = 0.
             else:
                 leaf_value = 1. if winner == env.current_player else -1.
-            # 回溯更新价值,因为经过step后玩家会变所以价值要加个负号
-            node.backup(-leaf_value)
         else:
             node.expand(action_probs)
 
-        # node.backup(-leaf_value)
+        # 回溯更新价值,因为经过step后玩家会变所以价值要加个负号
+        node.backup(-leaf_value)
 
     # 仿真，输出动作以及相应的概率
     def get_action_probs(self, env, temp=1e-3):
-        # 在选择动作前多次仿真,每次都要深复制避免自我对弈时环境中参数变化对自我对弈产生影响
+        # 在选择动作前多次仿真,每次都要深复制避免自我对弈时环境中参数以及落子变化对自我对弈产生影响
         for _ in range(self.number_playout):
             env_copy = copy.deepcopy(env)
             self.playout(env_copy)
@@ -171,7 +170,7 @@ class Player:
         else:
             # 测试时直接选择根据概率选择动作
             # action = np.random.choice(actions, p=probs)
-            action = np.max(actions)
+            action = np.argmax(action_probs)
             self.mcts.update_with_action(-1)
 
         if return_prob:

@@ -15,7 +15,7 @@ class Detector:
         self.number_playout = args.n_playout
         self.env = GameState(board_size, n)
         self.net.eval()
-        self.mcts_player = Player(policy=self.policy, number_playout=self.number_playout, is_self_play=True,
+        self.mcts_player = Player(policy=self.policy, number_playout=1000, is_self_play=False,
                                   print_detail=True)
 
     def policy(self, env):
@@ -45,5 +45,5 @@ class Detector:
 
 
 if __name__ == '__main__':
-    detector = Detector("models/net.pth")
+    detector = Detector("models/net_7_4.pth", args.board_size, args.number)
     detector.detect()

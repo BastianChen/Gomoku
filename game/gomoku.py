@@ -8,7 +8,7 @@ import torch
 
 
 class Game:
-    def __init__(self, board_size=6, n=4, start_player=0):
+    def __init__(self, board_size=6, n=4, start_player=1):
         self.width, self.height = board_size, board_size
         # 定义连续n子为胜利条件
         self.n = n
@@ -22,14 +22,14 @@ class Game:
         self.action_avail = list(range(self.size[0] * self.size[1]))
         # 定义state，大小为[n,2,9,9]，两个通道表示两个玩家，下过子的地方值为1，没下过的地方值为0
         self.state = np.zeros([2, *self.size], dtype=np.float32)
-        # 定义上一步动作
-        self.last_action = -1
+        # # 定义上一步动作
+        # self.last_action = -1
 
     # 初始化参数用于自训练
     def init_state(self):
         # 可选动作
         self.action_avail = list(range(self.size[0] * self.size[1]))
-        # state大小为n[n,2,9,9]
+        # state大小为n[n,2,15,15]
         self.state = np.zeros((2, *self.size), dtype=np.float32)
         # self.last_action = -1
 
@@ -57,7 +57,7 @@ class Game:
         self.state[self.current_player][location[0]][location[1]] = 1.
         # 在可选择的动作中删除已经使用过的动作
         self.action_avail.remove(action)
-        self.last_action = action
+        # self.last_action = action
         # 切换另一名玩家下棋
         self.current_player = 1 - self.current_player
         # 返回是否结束的结果以及胜利的玩家
