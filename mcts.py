@@ -169,8 +169,8 @@ class Player:
             self.mcts.update_with_action(action)
         else:
             # 测试时直接选择根据概率选择动作
-            # action = np.random.choice(actions, p=probs)
-            action = np.argmax(action_probs)
+            action = np.random.choice(actions, p=probs)
+            # action = np.argmax(action_probs)
             self.mcts.update_with_action(-1)
 
         if return_prob:
